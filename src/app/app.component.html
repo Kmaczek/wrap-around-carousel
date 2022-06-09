@@ -1,0 +1,13 @@
+<button type="button" (click)="toggleMove()">Move</button>
+{{position}}
+<div class="wrap">
+  <div class="child left" [@moveLeft]="position" (click)="moveLeft()">
+    <div></div>
+  </div>
+  <div class="child mid red" #mid [@moveMid]="position" (@moveMid.done)="onAnimationEvent($event, mid)">
+    <div></div>
+  </div>
+  <div class="child right green" [@moveRight]="position" (click)="moveRight()">
+    <div></div>
+  </div>
+</div>

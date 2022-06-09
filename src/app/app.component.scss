@@ -1,0 +1,40 @@
+
+.wrap {
+    display: flex;
+    width: 100vw;
+    height: 200px;
+    justify-content: space-evenly;
+}
+
+.child {
+    width: 75vw;
+    text-align: center;
+    background-color: burlywood;
+    border: 1px solid black;
+    position: fixed;
+    height: 150px;
+}
+
+.red {
+    background-color: crimson;
+}
+
+.green {
+    background-color: chartreuse;
+}
+
+.left {
+    order: 1;
+    transform: translateX(-80vw);
+}
+
+.mid {
+    order: 2;
+    left:auto;
+    right: auto;
+}
+
+.right {
+    order: 3;
+    transform: translateX(80vw);
+}
