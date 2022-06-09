@@ -1,13 +1,18 @@
 import {
   animate,
+  AnimationBuilder,
+  AnimationFactory,
+  AnimationPlayer,
   state,
   style,
   transition,
   trigger,
   useAnimation,
 } from '@angular/animations';
-import { ChangeDetectorRef, Component, OnInit, Renderer2 } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
+import { Subject } from 'rxjs';
 import { moveLeftOut, moveLeftToMid, moveMidToLeft, moveMidToRight, moveRightOut, moveRightToMid } from './app.animations';
+import { CarouselModel } from './app.models';
 
 @Component({
   selector: 'app-root',
@@ -31,42 +36,100 @@ import { moveLeftOut, moveLeftToMid, moveMidToLeft, moveMidToRight, moveRightOut
 export class AppComponent implements OnInit {
   isOpen = true;
   position: 'left' | 'mid' | 'right' = 'mid'
+  @ViewChildren('itemsRef', { read: ElementRef }) carouselElements: QueryList<ElementRef>;
 
-  items = ['one', 'two', 'three']
+  items: CarouselModel[] = []
 
-  constructor(private cdRef: ChangeDetectorRef, private renderer: Renderer2) {
+  timing = '400ms ease-in-out';
+  animationsDone$ = new Subject<string>();
+  animations: AnimationPlayer[] = []
+
+  constructor(private cdRef: ChangeDetectorRef, private renderer: Renderer2, private builder : AnimationBuilder) {
 
   }
 
   ngOnInit(): void {
-    
+    this.items.push(new CarouselModel({title: 'one', color: 'crimson'}));
+    this.items.push(new CarouselModel({title: 'two', color: 'chartreuse'}));
+    this.items.push(new CarouselModel({title: 'three', color: 'burlywood'}));
+    this.items.push(new CarouselModel({title: 'four', color: 'cornflowerblue'}));
+    this.items.push(new CarouselModel({title: 'five', color: 'darkorange'}));
+
+    const item = this.items.pop();
+    this.items.unshift(item);
+
+    this.animationsDone$.subscribe(x => {
+      if (x == 'right') {
+        const item = this.items.pop();
+        this.items.unshift(item);
+
+        this.items = [...this.items];
+      }
+      this.animations.forEach(x => x.destroy());
+      
+    })
   }
 
-  setDisplayedItems() {
-
+  private buildAnimation( offset: number ) {
+    return this.builder.build([
+      animate(this.timing, style({ transform: `translateX(${offset}vw)` }))
+    ]);
   }
 
-  toggle() {
-    this.isOpen = !this.isOpen;
-  }
+  animateToRight() {
+    this.animations = [];
+    const elements = this.carouselElements.toArray();
+    let fired = 0;
+    const animationCount = 4;
 
-  toggleMove() {
-    this.position = this.position === 'left' ? 'right' : 'left';
+    const midAnimation : AnimationFactory = this.buildAnimation(80);
+    const midPlayer = midAnimation.create(elements[1].nativeElement);
+    this.animations.push(midPlayer);
+    midPlayer.onDone((): void => {
+      fired++;
+      if(fired === animationCount) {
+        this.animationsDone$.next('right');
+      }
+    });
+
+    const leftAnimation : AnimationFactory = this.buildAnimation(0);
+    const leftPlayer = leftAnimation.create(elements[0].nativeElement);
+    this.animations.push(leftPlayer);
+    leftPlayer.onDone((): void => {
+      fired++;
+      if(fired === animationCount) {
+        this.animationsDone$.next('right');
+      }
+    });
+
+    const rightAnimation : AnimationFactory = this.buildAnimation(180);
+    const rightPlayer = rightAnimation.create(elements[2].nativeElement);
+    this.animations.push(rightPlayer);
+    rightPlayer.onDone((): void => {
+      fired++;
+      if(fired === animationCount) {
+        this.animationsDone$.next('right');
+      }
+    });
+
+    const outLeftAnimation : AnimationFactory = this.buildAnimation(-80);
+    const outLeftPlayer = outLeftAnimation.create(elements[elements.length-1].nativeElement);
+    this.animations.push(outLeftPlayer);
+    outLeftPlayer.onDone((): void => {
+      fired++;
+      if(fired === animationCount) {
+        this.animationsDone$.next('right');
+      }
+    });
+
+    this.animations.forEach(a => a.play());
   }
 
   moveRight() {
-    this.position = 'right';
+    this.animateToRight();
   }
 
   moveLeft() {
     this.position = 'left';
-  }
-
-  onAnimationEvent(ev:any, el: HTMLElement) {
-    //this.renderer.setStyle(el, 'order', this.position === 'left' ? '0' : '2');
-    //el.style.order = '1';
-    //this.cdRef.detectChanges();
-    this.position = 'mid';
-    console.log(ev);
   }
 }

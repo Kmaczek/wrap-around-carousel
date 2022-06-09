@@ -1,13 +1,23 @@
-<button type="button" (click)="toggleMove()">Move</button>
-{{position}}
 <div class="wrap">
-  <div class="child left" [@moveLeft]="position" (click)="moveLeft()">
-    <div></div>
-  </div>
-  <div class="child mid red" #mid [@moveMid]="position" (@moveMid.done)="onAnimationEvent($event, mid)">
-    <div></div>
-  </div>
-  <div class="child right green" [@moveRight]="position" (click)="moveRight()">
-    <div></div>
+  <div
+    #itemsRef
+    class="child"
+    *ngFor="let item of items; let i = index; trackByProperty:'title'"
+    [ngClass]="{'left': i === 0, 'mid': i === 1, 'right': i === 2, 'other': i > 2 && i < items.length -1, 'last':items.length === i+1}"
+    [style.backgroundColor]="item.color"
+    (click)="moveRight()"
+  >
+    {{item.title}}
   </div>
 </div>
+
+<!-- 
+<div class="child left" [@moveLeft]="position" (click)="moveLeft()">
+  <div></div>
+</div>
+<div class="child mid red" #mid [@moveMid]="position" (@moveMid.done)="onAnimationEvent($event, mid)">
+  <div></div>
+</div>
+<div class="child right green" [@moveRight]="position" (click)="moveRight()">
+  <div></div>
+</div> -->
