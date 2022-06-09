@@ -1,9 +1,15 @@
+.topw{
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+}
 
 .wrap {
     display: flex;
     width: 99vw;
     height: 200px;
     justify-content: space-evenly;
+    position: absolute;
 }
 
 .child {
@@ -11,6 +17,8 @@
     text-align: center;
     position: fixed;
     height: 150px;
+    will-change: transform;
+    position: absolute;
 }
 
 .left {
@@ -31,5 +39,5 @@
 }
 
 .other {
-    transform: translateX(180vw);
+    transform: translateX(160vw);
 }

@@ -1,16 +1,14 @@
-<div class="wrap">
-  <div
-    #itemsRef
-    class="child"
-    *ngFor="let item of items; let i = index; trackByProperty:'title'"
-    [ngClass]="{'left': i === 0, 'mid': i === 1, 'right': i === 2, 'other': i > 2 && i < items.length -1, 'last':items.length === i+1}"
-    [style.backgroundColor]="item.color"
-    (click)="moveRight()"
-  >
-    {{item.title}}
+<!-- <div [style.height]="'1000px'"></div> -->
+
+<div class="topw">
+  <div class="wrap">
+    <div #itemsRef class="child" *ngFor="let item of items; let i = index; trackByProperty:'title'"
+      [ngClass]="{'left': i === 0, 'mid': i === 1, 'right': i === 2, 'other': i > 2 && i < items.length -1, 'last':items.length === i+1}"
+      [style.backgroundColor]="item.color" (click)="moveRight()">
+      {{item.title}}
+    </div>
   </div>
 </div>
-
 <!-- 
 <div class="child left" [@moveLeft]="position" (click)="moveLeft()">
   <div></div>

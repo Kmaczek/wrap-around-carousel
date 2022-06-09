@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
 
   items: CarouselModel[] = []
 
-  timing = '400ms ease-in-out';
+  timing = '400ms ease-out';
   animationsDone$ = new Subject<string>();
   animations: AnimationPlayer[] = []
 
@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
     this.items.push(new CarouselModel({title: 'two', color: 'chartreuse'}));
     this.items.push(new CarouselModel({title: 'three', color: 'burlywood'}));
     this.items.push(new CarouselModel({title: 'four', color: 'cornflowerblue'}));
-    this.items.push(new CarouselModel({title: 'five', color: 'darkorange'}));
+    // this.items.push(new CarouselModel({title: 'five', color: 'darkorange'}));
 
     const item = this.items.pop();
     this.items.unshift(item);
@@ -72,7 +72,7 @@ export class AppComponent implements OnInit {
 
   private buildAnimation( offset: number ) {
     return this.builder.build([
-      animate(this.timing, style({ transform: `translateX(${offset}vw)` }))
+      animate(this.timing, style({ transform: `translate3d(${offset}vw, 0px, 0px)` }))
     ]);
   }
 
@@ -102,7 +102,7 @@ export class AppComponent implements OnInit {
       }
     });
 
-    const rightAnimation : AnimationFactory = this.buildAnimation(180);
+    const rightAnimation : AnimationFactory = this.buildAnimation(160);
     const rightPlayer = rightAnimation.create(elements[2].nativeElement);
     this.animations.push(rightPlayer);
     rightPlayer.onDone((): void => {
